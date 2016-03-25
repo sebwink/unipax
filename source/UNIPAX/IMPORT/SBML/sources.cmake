@@ -1,0 +1,7 @@
+SET(SOURCES_LIST
+SBMLReader.cpp
+SBMLConfigHandler.cpp
+MiriamLinkREST.cpp
+)
+
+ADD_UNIPAX_SOURCES("IMPORT/SBML" "${SOURCES_LIST}")

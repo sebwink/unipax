@@ -1,0 +1,8 @@
+SET(SOURCES_LIST
+	test_BridgeDBWrapper.cpp
+)
+
+UNIPAX_ADD_TESTS("UNIPAX/IMPORT" ${SOURCES_LIST})
+
+# for searching lokal MOCKS subdirectories:
+INCLUDE_DIRECTORIES("UNIPAX/IMPORT/MOCKS")

@@ -1,0 +1,8 @@
+### list all filenames of the directory here ###
+SET(GROUP "IMPORT/KEGGIMPORTER")
+
+SET(DIRECTORY "${CMAKE_SOURCE_DIR}/include/APPLICATIONS/${GROUP}")
+
+FILE(GLOB HEADERS_LIST "${DIRECTORY}/*.h")	
+
+ADD_UNIPAX_HEADERS("${GROUP}" "${HEADERS_LIST}")

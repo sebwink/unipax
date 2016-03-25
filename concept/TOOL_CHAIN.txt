@@ -1,0 +1,20 @@
+
+Model generation:
+  Starting point was BioPAX-Level3.owl Status: Final, Release v1.0 July 2010 from http://www.biopax.org/specification.php.
+  Extension using Protege-4.1beta and merged into one new ontology.
+  Translation to an xmi UML file using http://swap.uib.es:8080/owl2xmi/ (Feb 2011 version).
+  The UML model was then refined in IBM RSA V.8.0.2.
+
+Code generation:
+  C++/Java code stubbs were generated using the IBM RSA transformations.
+
+SQL file generation:
+  The UML model was transformed into a logical data model (LDM) with IBM RSA, too.
+  The LDM was transformed into physical data models using the IBM IDA7.5.2 tool.
+
+Fixing the following issues with vim (vim *.cpp/h; bufdo: %s/<pattern>/<replacement>/ge | update)
+ - *.h: "#include vector" replaced by "#include <vector>"
+ - *.h: "vector" replaced by "std::vector"
+ - *.cpp: "include """ replaced by "include <>"
+ - *.cpp: Inserted namespace "UniPAX::"
+ - "java::lang::", "boolean" replaced by appropriate C++ types

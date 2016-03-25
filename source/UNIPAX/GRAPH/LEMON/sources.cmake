@@ -1,0 +1,5 @@
+SET(SOURCES_LIST
+	RecursiveEnumerationAlgorithm.cpp
+)
+
+ADD_UNIPAX_SOURCES("GRAPH/LEMON" "${SOURCES_LIST}")

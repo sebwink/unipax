@@ -1,0 +1,8 @@
+SET(SOURCES_LIST
+RESTServer.cpp
+RESTServerHandler.cpp
+)
+
+ADD_UNIPAX_SOURCES("SERVER/REST" "${SOURCES_LIST}")
+
+

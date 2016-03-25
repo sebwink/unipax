@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xmi:XMI xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Standard="http://schema.omg.org/spec/UML/2.2/StandardProfileL2" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://schema.omg.org/spec/UML/2.2" xsi:schemaLocation="http://schema.omg.org/spec/UML/2.2/StandardProfileL2 http://schema.omg.org/spec/UML/2.2/StandardProfileL2.xmi#_yzU58YinEdqtvbnfB2L_5w http://schema.omg.org/spec/UML/2.2 http://www.eclipse.org/uml2/3.0.0/UML">
+  <uml:Model xmi:id="_E6_9UDYqEd2J5rmWSJ14Rw" name="UALPrimitiveDatatypes">
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="_e_oMEFIyEd2exLDlzlaiIA" name="boolean"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="_owu5wFIyEd2exLDlzlaiIA" name="char"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="_lwY4wFIzEd2exLDlzlaiIA" name="double"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="_oJuHoFIzEd2exLDlzlaiIA" name="float"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="_h28iAFIzEd2exLDlzlaiIA" name="int"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="_kDwX0FIzEd2exLDlzlaiIA" name="long"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="_ro6AwFIyEd2exLDlzlaiIA" name="short"/>
+    <packagedElement xmi:type="uml:PrimitiveType" xmi:id="_7Tc6wDLqEd-8BrAAkU0msQ" name="byte"/>
+    <profileApplication xmi:type="uml:ProfileApplication" xmi:id="_E6_9UzYqEd2J5rmWSJ14Rw">
+      <xmi:Extension extender="http://www.eclipse.org/emf/2002/Ecore">
+        <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_E6_9VDYqEd2J5rmWSJ14Rw" source="http://www.eclipse.org/uml2/2.0.0/UML">
+          <references xmi:type="ecore:EPackage" href="http://schema.omg.org/spec/UML/2.2/StandardProfileL2.xmi#_yzU58YinEdqtvbnfB2L_5w"/>
+        </eAnnotations>
+      </xmi:Extension>
+      <appliedProfile xmi:type="uml:Profile" href="http://schema.omg.org/spec/UML/2.2/StandardProfileL2.xmi#_0"/>
+    </profileApplication>
+  </uml:Model>
+  <Standard:ModelLibrary xmi:id="_MTXSADYqEd2J5rmWSJ14Rw" base_Package="_E6_9UDYqEd2J5rmWSJ14Rw"/>
+</xmi:XMI>

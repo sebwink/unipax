@@ -1,0 +1,8 @@
+SET(SOURCES_LIST
+	Kernel.cpp
+)
+ADD_UNIPAX_SOURCES("KERNEL" "${SOURCES_LIST}")
+
+INCLUDE("KERNEL/BIOPAX/sources.cmake")
+INCLUDE("KERNEL/EXT/sources.cmake")
+

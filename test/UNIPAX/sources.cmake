@@ -1,0 +1,5 @@
+INCLUDE("UNIPAX/KERNEL/sources.cmake")
+INCLUDE("UNIPAX/COMMON/sources.cmake")
+INCLUDE("UNIPAX/GRAPH/sources.cmake")
+INCLUDE("UNIPAX/IMPORT/sources.cmake")
+INCLUDE("UNIPAX/PERSISTENCE/sources.cmake")
