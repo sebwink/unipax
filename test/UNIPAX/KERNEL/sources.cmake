@@ -1,0 +1,2 @@
+INCLUDE("UNIPAX/KERNEL/BIOPAX/sources.cmake")
+INCLUDE("UNIPAX/KERNEL/EXT/sources.cmake")

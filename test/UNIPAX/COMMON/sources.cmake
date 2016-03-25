@@ -1,0 +1,8 @@
+SET(SOURCES_LIST
+	test_DBConnector.cpp
+)
+
+UNIPAX_ADD_TESTS("UNIPAX/COMMON" ${SOURCES_LIST})
+
+# for searching lokal MOCKS subdirectories:
+INCLUDE_DIRECTORIES("UNIPAX/COMMON/MOCKS")

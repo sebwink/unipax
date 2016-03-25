@@ -1,0 +1,20 @@
+UPBase*	as BioPAX	getObject( int id )
+
+	available via: http://<servername:port>/id/<unipaxid>
+
+
+ResultID,Size	search(Expression, ResultID = null)
+
+	will be available via: http://server:port/search?type="Protein"&name="%apop"
+	
+
+Result		getResult(ResultID, List of Attributes)
+
+ResultID	execute(CommandID, Arguments, ResultID)
+
+ListOfCommands	listComplexQueries()
+
+Result = (UniPAXID, (Attribute)*)*
+
+Expression = "(type=Prot) AND (value(name)=bcra)"
+ 

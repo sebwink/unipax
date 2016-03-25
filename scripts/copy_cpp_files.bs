@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# usage: copy_cpp_files.bs <source_dir> <dest_dir> <list>
+# copy all files contained in list from source_dir to dest_dir
+
+FILELST=`cat $3`
+for LINE in $FILELST
+do
+  cp "$1"/$LINE "$2"/
+done

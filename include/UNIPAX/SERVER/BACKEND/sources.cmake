@@ -1,0 +1,22 @@
+### list all filenames of the directory here ###
+SET(GROUP "SERVER/BACKEND")
+
+
+IF (database STREQUAL "oracle")
+	INCLUDE(${CMAKE_SOURCE_DIR}/include/UNIPAX/SERVER/BACKEND/ORACLE/sources.cmake)
+ENDIF (database STREQUAL "oracle")
+
+IF (NOT (database STREQUAL "oracle"))
+	INCLUDE(${CMAKE_SOURCE_DIR}/include/UNIPAX/SERVER/BACKEND/MYSQL/sources.cmake)
+ENDIF (NOT (database STREQUAL "oracle"))
+
+
+SET(DIRECTORY "${CMAKE_SOURCE_DIR}/include/UNIPAX/${GROUP}")
+
+FILE(GLOB HEADERS_LIST "${DIRECTORY}/*.h")
+
+FILE(GLOB MOCS "${DIRECTORY}/*.h")
+
+LIST(APPEND MOC_HEADERS_LIST ${MOCS})
+
+ADD_UNIPAX_HEADERS("${GROUP}" "${HEADERS_LIST}")

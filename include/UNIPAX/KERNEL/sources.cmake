@@ -1,0 +1,11 @@
+### list all filenames of the directory here ###
+SET(GROUP KERNEL)
+
+INCLUDE(${CMAKE_SOURCE_DIR}/include/UNIPAX/KERNEL/BIOPAX/sources.cmake)
+INCLUDE(${CMAKE_SOURCE_DIR}/include/UNIPAX/KERNEL/EXT/sources.cmake)
+
+SET(DIRECTORY "${CMAKE_SOURCE_DIR}/include/UNIPAX/${GROUP}")
+
+FILE(GLOB HEADERS_LIST "${DIRECTORY}/*.h")	
+
+ADD_UNIPAX_HEADERS("${GROUP}" "${HEADERS_LIST}")
