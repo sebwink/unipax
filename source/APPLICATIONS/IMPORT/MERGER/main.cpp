@@ -31,7 +31,7 @@ bool mergeXrefs(UniPAX::KernelCollector& merged, std::vector<boost::shared_ptr<U
 	std::multimap<std::string, boost::shared_ptr<UniPAX::Xref> > remainder;
 	for (std::vector<boost::shared_ptr<UniPAX::UPBase> >::iterator it = all_xrefs2.begin(); it != all_xrefs2.end(); it++)
 	{
-		boost::shared_ptr<UniPAX::Xref> tmp = boost::shared_dynamic_cast<UniPAX::Xref>(*it);
+		boost::shared_ptr<UniPAX::Xref> tmp = boost::dynamic_pointer_cast<UniPAX::Xref>(*it);
 		if (tmp->getId().empty())
 		{
 			std::cerr << "Empty Id field in " << tmp->getType() << " object." << std::endl;
@@ -45,7 +45,7 @@ bool mergeXrefs(UniPAX::KernelCollector& merged, std::vector<boost::shared_ptr<U
 	//std::list<boost::shared_ptr<UniPAX::UPBase> > remainder(all_xrefs2.begin(), all_xrefs2.end());
 	for (std::vector<boost::shared_ptr<UniPAX::UPBase> >::const_iterator it = all_xrefs1.begin(); it != all_xrefs1.end(); it++)
 	{
-		boost::shared_ptr<UniPAX::Xref> it_xref = boost::shared_dynamic_cast<UniPAX::Xref>(*it);
+		boost::shared_ptr<UniPAX::Xref> it_xref = boost::dynamic_pointer_cast<UniPAX::Xref>(*it);
 		if (debug) std::cout << "Copying "<< it_xref->getType() << " object " << it_xref->getDb() << ":" << it_xref->getId() << " with unpaxId:" << it_xref->getUnipaxId() << std::endl;
 		// make a copy
 		boost::shared_ptr<UniPAX::UPBase> result = it_xref->dynamic_copy();
@@ -116,7 +116,7 @@ bool mergeEntitiesByRef(UniPAX::KernelCollector& merged, const std::vector<boost
 	std::set<boost::shared_ptr<T> > src2_remainder;
 	for (std::vector<UniPAX::UPBasePtr>::const_iterator it = source_vec2.begin(); it != source_vec2.end(); ++it)
 	{
-		boost::shared_ptr<T> entity2 = boost::shared_dynamic_cast<T>(*it);
+		boost::shared_ptr<T> entity2 = boost::dynamic_pointer_cast<T>(*it);
 		//entity2->update(merged);
 		for (std::vector<UniPAX::EntityReferencePtr>::const_iterator er_it = entity2->getEntityReferences().begin(); er_it != entity2->getEntityReferences().end(); ++er_it)
 		{
@@ -134,7 +134,7 @@ bool mergeEntitiesByRef(UniPAX::KernelCollector& merged, const std::vector<boost
 	std::map<UnipaxId, UniPAX::UPBasePtr> refs_handled;
 	for (std::vector<UniPAX::UPBasePtr>::const_iterator it = source_vec1.begin(); it != source_vec1.end(); ++it)
 	{
-		boost::shared_ptr<T> entity3 = boost::shared_dynamic_cast<T>((*it)->dynamic_copy());
+		boost::shared_ptr<T> entity3 = boost::dynamic_pointer_cast<T>((*it)->dynamic_copy());
 		entity3->setUnipaxId(nextId());
 		entity3->update(merged);
 		if (debug) std::cout << "Copying instance of type " << entity3->getType()
@@ -234,7 +234,7 @@ bool mergeEntitiesByRef(UniPAX::KernelCollector& merged, const std::vector<boost
 	for (typename std::set<boost::shared_ptr<T> >::iterator it = src2_remainder.begin(); it != src2_remainder.end(); ++it)
 	{
 		if (debug) std::cout << "Copying remaining " << (*it)->getType() << " object." << std::endl;
-		boost::shared_ptr<T> entity3 = boost::shared_dynamic_cast<T>((*it)->dynamic_copy());
+		boost::shared_ptr<T> entity3 = boost::dynamic_pointer_cast<T>((*it)->dynamic_copy());
 		entity3->setUnipaxId(nextId());
 		entity3->update(merged);
 		if (debug) std::cout << "Setting id to " << entity3->getUnipaxId() << "." << std::endl;
@@ -252,7 +252,7 @@ bool mergeInstancesOf(UniPAX::KernelCollector& merged, const std::vector<boost::
 	std::set<boost::shared_ptr<T> > src2_remainder;
 	for (std::vector<boost::shared_ptr<UniPAX::UPBase> >::const_iterator it = source_vec2.begin(); it != source_vec2.end(); ++it)
 	{
-		boost::shared_ptr<T> instance2 = boost::shared_dynamic_cast<T>(*it);
+		boost::shared_ptr<T> instance2 = boost::dynamic_pointer_cast<T>(*it);
 		//for (std::vector<boost::shared_ptr<UniPAX::Xref> >::const_iterator xit = instance2->getXrefs().begin(); xit != instance2->getXrefs().end(); ++xit)
 		for (std::vector<boost::shared_ptr<UniPAX::Xref> >::const_iterator xit = instance2->getXrefs().begin(); xit != instance2->getXrefs().end(); ++xit)
 		{
@@ -267,7 +267,7 @@ bool mergeInstancesOf(UniPAX::KernelCollector& merged, const std::vector<boost::
 	std::map<UnipaxId, UniPAX::UPBasePtr> uxrefs_handled;
 	for (std::vector<boost::shared_ptr<UniPAX::UPBase> >::const_iterator it = source_vec1.begin(); it != source_vec1.end(); it++)
 	{
-		boost::shared_ptr<T> instance3 = boost::shared_dynamic_cast<T>((*it)->dynamic_copy());
+		boost::shared_ptr<T> instance3 = boost::dynamic_pointer_cast<T>((*it)->dynamic_copy());
 		instance3->setUnipaxId(nextId());
 		instance3->update(merged);
 		if (debug) std::cout << "Copying instance of type " << instance3->getType()
@@ -338,7 +338,7 @@ bool mergeInstancesOf(UniPAX::KernelCollector& merged, const std::vector<boost::
 	for (typename std::set<boost::shared_ptr<T> >::iterator it = src2_remainder.begin(); it != src2_remainder.end(); ++it)
 	{
 		if (debug) std::cout << "Copying remaining " << (*it)->getType() << " object." << std::endl;
-		boost::shared_ptr<T> instance3 = boost::shared_dynamic_cast<T>((*it)->dynamic_copy());
+		boost::shared_ptr<T> instance3 = boost::dynamic_pointer_cast<T>((*it)->dynamic_copy());
 		instance3->setUnipaxId(nextId());
 		instance3->update(merged);
 		if (debug) std::cout << "Setting id to " << instance3->getUnipaxId() << "." << std::endl;
@@ -355,7 +355,7 @@ bool mergeBioSources(UniPAX::KernelCollector& merged, std::vector<boost::shared_
 	std::set<UniPAX::BioSourcePtr> src2_remainder;
 	for (std::vector<boost::shared_ptr<UniPAX::UPBase> >::iterator it = all_biosources2.begin(); it != all_biosources2.end(); it++)
 	{
-		boost::shared_ptr<UniPAX::BioSource> biosource2 = boost::shared_dynamic_cast<UniPAX::BioSource>(*it);
+		boost::shared_ptr<UniPAX::BioSource> biosource2 = boost::dynamic_pointer_cast<UniPAX::BioSource>(*it);
 		for (std::vector<boost::shared_ptr<UniPAX::Xref> >::const_iterator xit = biosource2->getXrefs().begin(); xit != biosource2->getXrefs().end(); ++xit)
 		{
 			if ((*xit)->getType().compare("UnificationXref") == 0)
@@ -368,7 +368,7 @@ bool mergeBioSources(UniPAX::KernelCollector& merged, std::vector<boost::shared_
 	// search for matches between Biosource objects
 	for (std::vector<boost::shared_ptr<UniPAX::UPBase> >::iterator it = all_biosources1.begin(); it != all_biosources1.end(); it++)
 	{
-		boost::shared_ptr<UniPAX::BioSource> biosource3 = boost::shared_dynamic_cast<UniPAX::BioSource>((*it)->dynamic_copy());
+		boost::shared_ptr<UniPAX::BioSource> biosource3 = boost::dynamic_pointer_cast<UniPAX::BioSource>((*it)->dynamic_copy());
 		biosource3->setUnipaxId(nextId());
 		biosource3->update(merged);
 		if (debug) std::cout << "Copying BioSource object with displayName: " << biosource3->getDisplayName() << ".\nSetting id to " << biosource3->getUnipaxId() << "." << std::endl;
@@ -414,7 +414,7 @@ bool mergeBioSources(UniPAX::KernelCollector& merged, std::vector<boost::shared_
 	// add remaining objects from source2
 	for (std::set<UniPAX::BioSourcePtr>::const_iterator it = src2_remainder.begin(); it != src2_remainder.end(); ++it)
 	{
-		boost::shared_ptr<UniPAX::BioSource> biosource3 = boost::shared_dynamic_cast<UniPAX::BioSource>((*it)->dynamic_copy());
+		boost::shared_ptr<UniPAX::BioSource> biosource3 = boost::dynamic_pointer_cast<UniPAX::BioSource>((*it)->dynamic_copy());
 		if (debug) std::cout << "Copying remaining BioSource object. Setting id to " << biosource3->getUnipaxId() << "." << std::endl;
 		biosource3->setUnipaxId(nextId());
 		biosource3->update(merged);
@@ -771,7 +771,7 @@ int main(int argC, char** argV)
 			//if (!(*it)->update(result)) return 0;
 			if ((*it)->getTypeID() == UniPAX::ClassType::idStoichiometry)
 			{
-				UniPAX::StoichiometryPtr stoi = boost::shared_dynamic_cast<UniPAX::Stoichiometry>(*it);
+				UniPAX::StoichiometryPtr stoi = boost::dynamic_pointer_cast<UniPAX::Stoichiometry>(*it);
 				if (debug) std::cout << "before copy " << (stoi->getPhysicalEntity() != 0) << std::endl;
 				if (!stoi->update(result)) return 0;
 				if (debug) std::cout << "before copy after update " << (stoi->getPhysicalEntity() != 0) << std::endl;
@@ -781,7 +781,7 @@ int main(int argC, char** argV)
 			if (!object->update(result)) return 0;
 			if (object->getTypeID() == UniPAX::ClassType::idStoichiometry)
 			{
-				UniPAX::StoichiometryPtr stoi = boost::shared_dynamic_cast<UniPAX::Stoichiometry>(object);
+				UniPAX::StoichiometryPtr stoi = boost::dynamic_pointer_cast<UniPAX::Stoichiometry>(object);
 				if (debug) std::cout << "after copy " << (stoi->getPhysicalEntity() != 0) << std::endl;
 				if (!stoi->update(result)) return 0;
 				if (debug) std::cout << "before copy after update " << (stoi->getPhysicalEntity() != 0) << std::endl;
@@ -915,10 +915,10 @@ int main(int argC, char** argV)
 		  }*/
 	UniPAX::BIOPAXWriter writer; // for output
 
-	/*boost::shared_ptr<UniPAX::ProteinReference>  first = boost::shared_dynamic_cast<UniPAX::ProteinReference>(db.getObjectByID(705070265));
-		  boost::shared_ptr<UniPAX::ProteinReference>  second = boost::shared_dynamic_cast<UniPAX::ProteinReference>(db.getObjectByID(705076958));
-		  boost::shared_ptr<UniPAX::BioSource>  first_org = boost::shared_dynamic_cast<UniPAX::BioSource>(db.getObjectByID(16777233));
-		  boost::shared_ptr<UniPAX::BioSource>  second_org = boost::shared_dynamic_cast<UniPAX::BioSource>(db.getObjectByID(16777218));
+	/*boost::shared_ptr<UniPAX::ProteinReference>  first = boost::dynamic_pointer_cast<UniPAX::ProteinReference>(db.getObjectByID(705070265));
+		  boost::shared_ptr<UniPAX::ProteinReference>  second = boost::dynamic_pointer_cast<UniPAX::ProteinReference>(db.getObjectByID(705076958));
+		  boost::shared_ptr<UniPAX::BioSource>  first_org = boost::dynamic_pointer_cast<UniPAX::BioSource>(db.getObjectByID(16777233));
+		  boost::shared_ptr<UniPAX::BioSource>  second_org = boost::dynamic_pointer_cast<UniPAX::BioSource>(db.getObjectByID(16777218));
 
 		  manager.collect(first);
 		  manager.collect(second);
