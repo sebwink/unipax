@@ -36,7 +36,7 @@ QHttpConnection::QHttpConnection(QTcpSocket *socket, QObject *parent)
     , m_socket(socket)
     , m_parser(0)
 {
-    qDebug() << QDateTime::currentDateTime.toString() << ": Got new connection" << socket->peerAddress() << socket->peerPort();
+    qDebug() << QDateTime::currentDateTime().toString() << ": Got new connection" << socket->peerAddress() << socket->peerPort();
 
     m_parser = (http_parser*)malloc(sizeof(http_parser));
     http_parser_init(m_parser, HTTP_REQUEST);
