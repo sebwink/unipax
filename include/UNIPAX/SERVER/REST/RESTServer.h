@@ -8,6 +8,7 @@
 #include <UNIPAX/SERVER/HTTP/qhttprequest.h>
 #include <UNIPAX/SERVER/HTTP/qhttpresponse.h>
 
+#include <UNIPAX/SERVER/HTTP/RequestHandler.h>
 #include <UNIPAX/SERVER/REST/RESTServerHandler.h>
 
 #include <QStringList>
@@ -21,24 +22,6 @@ namespace UniPAX
 
 namespace SERVER
 {
-
-class RequestHandler: public QObject {
-	Q_OBJECT
-
-public:
-	RequestHandler(QHttpRequest *request, QHttpResponse *response);
-	~RequestHandler();
-
-	private slots:
-	void onEnd();
-
-	signals:
-	void requestComplete(QHttpRequest *request, QHttpResponse *response);
-
-	private:
-	QHttpRequest * m_request;
-	QHttpResponse *m_response;
-};
 
 class UNIPAX_EXPORT RESTServer : public QObject
 {
