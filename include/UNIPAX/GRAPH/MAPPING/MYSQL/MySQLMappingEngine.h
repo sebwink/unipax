@@ -1800,11 +1800,11 @@ private :
 		}
 
 		QStringList nodeIdList;
-		std::cout << "NodeList is:" << std::endl;
+		//std::cout << "NodeList is:" << std::endl;
 		for (typename std::map<UnipaxId, typename T::Graph::Node>::const_iterator it = network.id_node_map.begin(); it != network.id_node_map.end(); ++it)
 		{
 			nodeIdList.append(QVariant((qulonglong)it->first).toString());
-			std::cout << QVariant((qulonglong)it->first).toString().toStdString() << ", "; 
+			//std::cout << QVariant((qulonglong)it->first).toString().toStdString() << ", "; 
 		}
 
 		std::cout << std::endl;
