@@ -443,102 +443,128 @@ boost::shared_ptr<UniPAX::GRAPH::RelationsGraph> UniPAX::GRAPH::mysql::MySQLMapp
 UniPAX::GRAPH::ProteinProteinInteractionNetworkPtr UniPAX::GRAPH::mysql::MySQLMappingEngine::createProteinProteinInteractionNetwork(const ResultObject & result_obj)
 {
 	BiologicalNetworkPtr nw;
-	if (network_cache.get("PPI_" + result_obj.getConstitutingQuery(), nw))
+	std::string cacheString = "PPI_" + result_obj.getConstitutingQuery();
+	// create network
+	ProteinProteinInteractionNetworkPtr ppi(new UniPAX::GRAPH::ProteinProteinInteractionNetwork());
+	addInteractions(*ppi, result_obj);
+	
+	if (network_cache.get(cacheString, nw))
 	{
-		return boost::dynamic_pointer_cast<ProteinProteinInteractionNetwork>(nw);
+		//return boost::dynamic_pointer_cast<ProteinProteinInteractionNetwork>(nw);
+		std::cout << "Found cached Network " << cacheString << ". Still creating new one (Github Issue#4)" << std::endl;
 	}
 	else
 	{
-		ProteinProteinInteractionNetworkPtr ppi(new UniPAX::GRAPH::ProteinProteinInteractionNetwork());
-		addInteractions(*ppi, result_obj);
-		network_cache.insert("PPI_" + result_obj.getConstitutingQuery(), boost::dynamic_pointer_cast<BiologicalNetwork>(ppi));
-		return ppi;
+		std::cout << "Creating Network " << cacheString << ". Putting it into Cache, which is not usable (Github Issue#4)" << std::endl;
+		network_cache.insert(cacheString, boost::dynamic_pointer_cast<BiologicalNetwork>(ppi));
 	}
+	return ppi;
 }
 
 
 boost::shared_ptr<UniPAX::GRAPH::ProteinProteinInteractionNetwork> UniPAX::GRAPH::mysql::MySQLMappingEngine::createProteinProteinInteractionNetwork(const std::set<std::string> & physical_entities)
 {
 	BiologicalNetworkPtr nw;
-	if (network_cache.get("PPI_" + collate(physical_entities), nw))
+	std::string cacheString = "PPI_" + collate(physical_entities);
+	// create Network
+	ProteinProteinInteractionNetworkPtr ppi(new UniPAX::GRAPH::ProteinProteinInteractionNetwork());
+	addInteractions(*ppi, physical_entities);
+	if (network_cache.get(cacheString, nw))
 	{
-		return boost::dynamic_pointer_cast<ProteinProteinInteractionNetwork>(nw);
+		//return boost::dynamic_pointer_cast<ProteinProteinInteractionNetwork>(nw);
+		std::cout << "Found cached Network " << cacheString << ". Still creating new one (Github Issue#4)" << std::endl;
 	}
 	else
 	{
-		ProteinProteinInteractionNetworkPtr ppi(new UniPAX::GRAPH::ProteinProteinInteractionNetwork());
-		addInteractions(*ppi, physical_entities);
+		std::cout << "Creating Network " << cacheString << ". Putting it into Cache, which is not usable (Github Issue#4)" << std::endl;
 		network_cache.insert("PPI_" + collate(physical_entities), boost::dynamic_pointer_cast<BiologicalNetwork>(ppi));
-		return ppi;
 	}
+	return ppi;
 }
 
 boost::shared_ptr<UniPAX::GRAPH::RegulatoryNetwork> UniPAX::GRAPH::mysql::MySQLMappingEngine::createRegulatoryNetwork(const std::set<std::string> & physical_entities, const UniPAX::ResultObject & result_obj)
 {
 	BiologicalNetworkPtr nw;
-	if (network_cache.get("RGL_" + collate(physical_entities) + result_obj.getConstitutingQuery(), nw))
+	std::string cacheString = "RGL_" + collate(physical_entities) + result_obj.getConstitutingQuery();
+	// create network
+	boost::shared_ptr<UniPAX::GRAPH::RegulatoryNetwork> regulatory(new UniPAX::GRAPH::RegulatoryNetwork());
+	addTemplateRegulations(*regulatory, physical_entities, result_obj);
+	addControlOfBiochemicalReactions(*regulatory, physical_entities, result_obj);
+	addControlOfConversions(*regulatory, physical_entities, result_obj);
+	if (network_cache.get(cacheString, nw))
 	{
-		return boost::dynamic_pointer_cast<RegulatoryNetwork>(nw);
+		//return boost::dynamic_pointer_cast<RegulatoryNetwork>(nw);
+		std::cout << "Found cached Network " << cacheString << ". Still creating new one (Github Issue#4)" << std::endl;
 	}
 	else
 	{
-		boost::shared_ptr<UniPAX::GRAPH::RegulatoryNetwork> regulatory(new UniPAX::GRAPH::RegulatoryNetwork());
-		addTemplateRegulations(*regulatory, physical_entities, result_obj);
-		addControlOfBiochemicalReactions(*regulatory, physical_entities, result_obj);
-		addControlOfConversions(*regulatory, physical_entities, result_obj);
+		std::cout << "Creating Network " << cacheString << ". Putting it into Cache, which is not usable (Github Issue#4)" << std::endl;
 		network_cache.insert("RGL_" + collate(physical_entities) + result_obj.getConstitutingQuery(), boost::dynamic_pointer_cast<BiologicalNetwork>(regulatory));
-		return regulatory;
 	}
+	return regulatory;
 }
 
 boost::shared_ptr<UniPAX::GRAPH::RegulatoryNetwork> UniPAX::GRAPH::mysql::MySQLMappingEngine::createRegulatoryNetwork(const std::set<std::string> & physical_entities)
 {
 	BiologicalNetworkPtr nw;
-	if (network_cache.get("RGL_" + collate(physical_entities), nw))
+	std::string cacheString = "RGL_" + collate(physical_entities);
+	// create network
+	boost::shared_ptr<UniPAX::GRAPH::RegulatoryNetwork> regulatory(new UniPAX::GRAPH::RegulatoryNetwork());
+	addTemplateRegulations(*regulatory, physical_entities);
+	addControlOfBiochemicalReactions(*regulatory, physical_entities);
+	addControlOfConversions(*regulatory, physical_entities);
+	if (network_cache.get(cacheString, nw))
 	{
-		return boost::dynamic_pointer_cast<RegulatoryNetwork>(nw);
+		//return boost::dynamic_pointer_cast<RegulatoryNetwork>(nw);
+		std::cout << "Found cached Network " << cacheString << ". Still creating new one (Github Issue#4)" << std::endl;
 	}
 	else
 	{
-		boost::shared_ptr<UniPAX::GRAPH::RegulatoryNetwork> regulatory(new UniPAX::GRAPH::RegulatoryNetwork());
-		addTemplateRegulations(*regulatory, physical_entities);
-		addControlOfBiochemicalReactions(*regulatory, physical_entities);
-		addControlOfConversions(*regulatory, physical_entities);
+		std::cout << "Creating Network " << cacheString << ". Putting it into Cache, which is not usable (Github Issue#4)" << std::endl;
 		network_cache.insert("RGL_" + collate(physical_entities), boost::dynamic_pointer_cast<BiologicalNetwork>(regulatory));
-		return regulatory;
 	}
+	return regulatory;
 }
 
 boost::shared_ptr<UniPAX::GRAPH::MetabolicNetwork> UniPAX::GRAPH::mysql::MySQLMappingEngine::createMetabolicNetwork(const std::set<std::string> & physical_entities, const UniPAX::ResultObject & result_obj)
 {
 	BiologicalNetworkPtr nw;
-	if (network_cache.get("MTB_" + collate(physical_entities) + result_obj.getConstitutingQuery(), nw))
+	std::string cacheString = "MTB_" + collate(physical_entities) + result_obj.getConstitutingQuery();
+	// creating network
+	boost::shared_ptr<UniPAX::GRAPH::MetabolicNetwork> metabolic(new UniPAX::GRAPH::MetabolicNetwork());
+	addBiochemicalReactions(*metabolic, physical_entities, result_obj);
+	
+	if (network_cache.get(cacheString, nw))
 	{
-		return boost::dynamic_pointer_cast<MetabolicNetwork>(nw);
+		//return boost::dynamic_pointer_cast<MetabolicNetwork>(nw);
+		std::cout << "Found cached Network " << cacheString << ". Still creating new one (Github Issue#4)" << std::endl;
 	}
 	else
 	{
-		boost::shared_ptr<UniPAX::GRAPH::MetabolicNetwork> metabolic(new UniPAX::GRAPH::MetabolicNetwork());
-		addBiochemicalReactions(*metabolic, physical_entities, result_obj);
+		std::cout << "Creating Network " << cacheString << ". Putting it into Cache, which is not usable (Github Issue#4)" << std::endl;
 		network_cache.insert("MTB_" + collate(physical_entities) + result_obj.getConstitutingQuery(), boost::dynamic_pointer_cast<BiologicalNetwork>(metabolic));
-		return metabolic;
 	}
+	return metabolic;
 }
 
 boost::shared_ptr<UniPAX::GRAPH::MetabolicNetwork> UniPAX::GRAPH::mysql::MySQLMappingEngine::createMetabolicNetwork(const std::set<std::string> & physical_entities)
 {
 	BiologicalNetworkPtr nw;
-	if (network_cache.get("MTB_" + collate(physical_entities), nw))
+	std::string cacheString = "MTB_" + collate(physical_entities);
+	// creating network
+	boost::shared_ptr<UniPAX::GRAPH::MetabolicNetwork> metabolic(new UniPAX::GRAPH::MetabolicNetwork());
+	addBiochemicalReactions(*metabolic, physical_entities);
+	if (network_cache.get(cacheString, nw))
 	{
-		return boost::dynamic_pointer_cast<MetabolicNetwork>(nw);
+		std::cout << "Found cached Network " << cacheString << ". Still creating new one (Github Issue#4)" << std::endl;
+	//	return boost::dynamic_pointer_cast<MetabolicNetwork>(nw);
 	}
 	else
 	{
-		boost::shared_ptr<UniPAX::GRAPH::MetabolicNetwork> metabolic(new UniPAX::GRAPH::MetabolicNetwork());
-		addBiochemicalReactions(*metabolic, physical_entities);
+		std::cout << "Creating Network " << cacheString << ". Putting it into Cache, which is not usable (Github Issue#4)" << std::endl;
 		network_cache.insert("MTB_" + collate(physical_entities), boost::dynamic_pointer_cast<BiologicalNetwork>(metabolic));
-		return metabolic;
 	}
+	return metabolic;
 }
 
 
