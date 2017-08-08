@@ -63,6 +63,14 @@ namespace UniPAX {
 						bool checkRegExp(std::string identifier, std::string datatype);
 
 						/**
+						 * @brief returns the converted URI from Miriam REST
+						 *
+						 * @return string containing the converted URI
+						 */
+						std::string getConvertedURI(std::string fromURI, std::string toURIType);
+
+
+						/**
 						 * @brief returns the address (endpoint) of the web service
 						 *
 						 * @return string containing the address (endpoint) of the web service

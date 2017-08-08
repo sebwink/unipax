@@ -429,7 +429,7 @@ void SBMLConfigHandler::annotationMIRIAM(std::string uri, std::map<std::string, 
 		std::vector<std::string> uris = miriamLink->getDataTypeURIs(name);
 		for (int i = 0; i < uris.size(); i++) {
 			table[uris[i]] = type;
-			// System.out.println("key: "+URIs[i]+"   value: "+ type);
+			if(debug)  std::cout << "key: "+uris[i]+"   value: "+ type << std::endl;
 		}
 	}
 

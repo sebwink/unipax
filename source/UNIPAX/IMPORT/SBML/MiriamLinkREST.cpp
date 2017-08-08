@@ -149,6 +149,41 @@ bool UniPAX::MiriamLink::initDataTypes()
 		return true;
 }
 
+
+std::string UniPAX::MiriamLink::getConvertedURI(std::string fromURI, std::string toURIType)
+{
+	std::cout << "Converting " << fromURI << " to type: " << toURIType << std::endl;
+	boost::shared_ptr<QDomDocument> doc(new QDomDocument());
+	if (!request(QUrl(QString::fromStdString("http://www.ebi.ac.uk/miriamws/main/rest/convert?uri=" + fromURI)), doc))
+	{
+		return "none found";
+	}
+	QDomElement root = doc->documentElement();
+	if (debug) std::cout << "root element: " << root.tagName().toStdString() << std::endl;
+	
+	// find all uris
+	//uris = doc->documentElement().firstChildElement("uris");
+	//QDomElement uris = doc->documentElement().firstChildElement("uris");
+	for (QDomElement elt = root.firstChildElement("uri"); !elt.isNull(); elt = elt.nextSiblingElement("uri"))
+	{
+		//uris_id->insert(std::pair<std::string, std::string>(elt.text().toStdString(), dit->second));
+		if (!elt.hasAttribute("deprecated") && elt.hasAttribute("type") && elt.attribute("type").toStdString() == toURIType )
+		{
+			//id_uri->insert(std::pair<std::string, std::string>(dit->second, elt.text().toStdString()));
+		// get the uri with the needed type and return it
+			std::cout << "Converted URI: " << elt.text().toStdString() << std::endl; 
+			// workaround becaus of damning encodings
+			//std::string elt_text = elt.text().toStdString();
+			//int chebi_pos = elt_text.find("CHEBI");
+			//std::string elt_final_text = elt_text.substr(0, chebi_pos+5) + ":" + elt_text.substr(chebi_pos+7);
+			//if (debug) std::cout << "Changed " << elt_text << " to final text: " + elt_final_text << std::endl; 
+			//return elt_final_text;
+			return elt.text().toStdString();
+		}
+	}
+}
+
+
 bool UniPAX::MiriamLink::checkRegExp(std::string identifier, std::string datatype)
 {
 		if (!initialized && !initDataTypes())
@@ -518,7 +553,7 @@ std::string UniPAX::MiriamLink::getName(std::string uri)
 		std::map<std::string, std::string>::const_iterator id = uris_id->find(uri);
 		if (id == uris_id->end())
 		{
-				std::cerr << "URI " << uri << " not known by webservice." << std::endl;
+				std::cerr << "Function getName: URI " << uri << " not known by webservice." << std::endl;
 				return "";
 		}
 		else 
@@ -557,7 +592,7 @@ std::string UniPAX::MiriamLink::getOfficialURI(std::string uri)
 		std::map<std::string, std::string>::const_iterator id = uris_id->find(uri);
 		if (id == uris_id->end())
 		{
-				std::cerr << "URI " << uri << " not known by webservice." << std::endl;
+				std::cerr << "Function getOfficialURI: URI " << uri << " not known by webservice." << std::endl;
 				return "";
 		}
 		else 

@@ -37,6 +37,7 @@
 #include<sbml/Reaction.h>
 #include<sbml/SBMLTypes.h>
 #include<boost/algorithm/string_regex.hpp>
+#include<boost/algorithm/string/replace.hpp>
 #include<boost/lexical_cast.hpp>
 #include<UNIPAX/COMMON/common.h>
 #include<UNIPAX/COMMON/PersistenceManager.h>

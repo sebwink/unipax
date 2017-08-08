@@ -84,6 +84,7 @@ bool SBMLReader::init(std::string proxy_host, int proxy_port, std::string config
 		miriamLink = new UniPAX::MiriamLink();
 	}
 	miriamLink->setProxy(proxy_host, proxy_port);
+	miriamLink->setDebug(debug);
 	configHandler.setMiriamLink(miriamLink);
 	if(!parseConfigFile(config_file_path))
 	{
@@ -694,7 +695,7 @@ bool SBMLReader::mapToUniPAX(libsbml::SBMLDocument* document, UniPAX::Persistenc
 		std::vector<std::string> speciesAnnotationIdentifierList; // list of ressource identifier
 		{
 			if (debug)
-				std::cout << "ListOfSpecies:" << std::endl;
+				std::cout << "ListOfSpecies (there are " << model->getListOfSpecies()->size() << "): " << std::endl;
 			for (int i=0; i < model->getListOfSpecies()->size(); i++)
 			{
 				if (debug)
@@ -724,35 +725,41 @@ bool SBMLReader::mapToUniPAX(libsbml::SBMLDocument* document, UniPAX::Persistenc
 						annotations = parseURIs(model->getListOfSpecies()->get(i)->getAnnotationString());
 					}
 					std::vector<std::string>::iterator it = annotations.begin();
+					bool hasAnnotation = false;
 					while ( it != annotations.end() )
 					{
-						std::pair<std::string, std::string> miriam = parseMiriamAnnotation(*it);
-						std::string annotationDB = miriam.second;
-						std::string annotationIdentifier = miriam.first;
-
-
-						if (configHandler.getAnnotationSpecies().find(annotationDB) != configHandler.getAnnotationSpecies().end())
+						if(!hasAnnotation)
 						{
-							speciesAnnotationNameDBList.push_back(annotationDB);
-							speciesAnnotationIdentifierList.push_back(annotationIdentifier);
-							if (physicalEntityType.empty())
+							std::pair<std::string, std::string> miriam = parseMiriamAnnotation(*it);
+							std::string annotationDB = miriam.second;
+							std::string annotationIdentifier = miriam.first;
+							std::cerr << "Is this right? annotationDB: " << annotationDB << " and annotationIdentifer: " << annotationIdentifier << std::endl;
+
+							if (configHandler.getAnnotationSpecies().find(annotationDB) != configHandler.getAnnotationSpecies().end())
 							{
-								physicalEntityType = configHandler.getAnnotationSpecies()[annotationDB];
+								speciesAnnotationNameDBList.push_back(annotationDB);
+								speciesAnnotationIdentifierList.push_back(annotationIdentifier);
+								hasAnnotation = true;
+								if (physicalEntityType.empty())
+								{
+									physicalEntityType = configHandler.getAnnotationSpecies()[annotationDB];
+								}
+								else if ((!isaComplex) && (physicalEntityType.compare(configHandler.getAnnotationSpecies()[annotationDB]) != 0)) // no complex but type change in annotation!
+								{
+									
+									std::cerr << "Contradictional annotation of " << annotationDB << ": " << physicalEntityType << " / " << configHandler.getAnnotationSpecies()[annotationDB] << ". Aborting parse. " << std::endl;
+									return false;
+								}
 							}
-							else if ((!isaComplex) && (physicalEntityType.compare(configHandler.getAnnotationSpecies()[annotationDB]) != 0)) // no complex but type change in annotation!
-									{
-								std::cerr << "Contradictional annotation: " << physicalEntityType << " / " << configHandler.getAnnotationSpecies()[annotationDB] << ". Aborting parse. " << std::endl;
-								return false;
-									}
-						}
-						else
-						{
-							// Test for Ensembl annotation
-							//TODO
+							else
+							{
+								// Test for Ensembl annotation
+								//TODO
+							}
 						}
 						it++;
 					}
-
+					
 				}
 				else // no annotation: map to physical entity
 				{
@@ -771,6 +778,7 @@ bool SBMLReader::mapToUniPAX(libsbml::SBMLDocument* document, UniPAX::Persistenc
 					// set Attributes
 				}
 				// create entity of type physicalEntityType.
+				if(physicalEntityType == "") physicalEntityType = "PhysicalEntity";
 				entity = boost::dynamic_pointer_cast<UniPAX::PhysicalEntity>(manager.createInstance(createId(model->getListOfSpecies()->get(i)->getId()), physicalEntityType, created));
 				if (debug) std::cout << "Created Species as Type " << physicalEntityType << std::endl;
 				if (!created)
@@ -1143,7 +1151,9 @@ std::string SBMLReader::createId(const std::string unique)
 
 std::pair<std::string, std::string> SBMLReader::parseMiriamAnnotation(const std::string annotation)
 {
-	std::string uri, id, official_urn;
+	if (debug) std::cout << "Parsing Mririam Annotation: " << annotation << std::endl;
+	std::string uri, id, official_urn, tmp_anno;
+	bool isIdentifiersURI = false;
 	int pos = annotation.find("#");
 	if (pos != -1)
 	{
@@ -1154,14 +1164,88 @@ std::pair<std::string, std::string> SBMLReader::parseMiriamAnnotation(const std:
 	}
 	else
 	{
-		//pos = annotation.rfind(":");
-		pos = annotation.find(":"); // urn:
-		pos = annotation.find(":", pos+1); // urn:miriam:
-		pos = annotation.find(":", pos+1); // urn:miriam:obo.chebi:
-		if (pos != -1)
+		if(annotation.find("identifiers.org") != std::string::npos && annotation.find("chebi") != std::string::npos) 
 		{
-			uri = annotation.substr(0, pos);
-			id = annotation.substr(pos+1);
+			// use miriam convertURL Function to convert identifiers.org URI into Miriam URI
+			tmp_anno = miriamLink->getConvertedURI(annotation, "URN");
+			//tmp_anno = boost::algorithm::replace_all(annotation, "%3A", ':');
+			if (tmp_anno == "none found")
+			{
+				tmp_anno = "urn:miriam:none:" + annotation;
+				if (debug) std::cout << "Converted " << annotation << " to " << tmp_anno << std::endl;
+			}
+			isIdentifiersURI = true;
+
+		}
+		else if (annotation.find("identifiers.org") != std::string::npos && annotation.find("kegg") != std::string::npos)
+		{
+			// we have a kegg entry, like http://identifiers.org/kegg.compound/C00001
+			// unfortunately, MIRIAM cant convert this type of url
+			// That is why we need to do some stuff ourselves
+			std::vector<std::string> identifierTokens;
+			boost::split(identifierTokens, annotation, boost::is_any_of("/"));
+			if (identifierTokens.size() == 5)
+			{
+				if(debug) std::cout << "Using KEGG Identifier " << identifierTokens[4] << " for Miriam Search" << std::endl;	
+				std::string searchIdentifier = identifierTokens[4];
+				if(searchIdentifier.find(":") != std::string::npos)
+				{
+					// there is a doublecolon in the query, we probably need to elimate it
+					std::vector<std::string> hsaTokens;
+					boost::split(hsaTokens, searchIdentifier, boost::is_any_of(":"));
+					if(hsaTokens.size() == 2)
+					{
+						searchIdentifier = hsaTokens[0] + hsaTokens[1];
+					}
+					else
+					{
+						std::cerr << "Error looking up " << annotation << std::endl;
+						return std::pair<std::string, std::string>();
+					}
+					if(debug) std::cout << "Changed KEGG identifier " << identifierTokens[4] << " to miriam search handle: " << searchIdentifier << std::endl;
+				}
+				std::string newKeggURL = "http://www.kegg.jp/entry/" + searchIdentifier;
+				
+				// use miriam convertURL Function to convert identifiers.org URI into Miriam URI
+				tmp_anno = miriamLink->getConvertedURI(newKeggURL, "URN");
+				//tmp_anno = boost::algorithm::replace_all(annotation, "%3A", ':');
+				if (tmp_anno == "none found")
+				{
+					tmp_anno = "urn:miriam:none:" + newKeggURL;
+					if (debug) std::cout << "Converted " << newKeggURL << " to " << tmp_anno << std::endl;
+				}
+				isIdentifiersURI = true;
+			}
+			else
+			{
+				std::cout << "Having " << identifierTokens.size() << " tokens" << std::endl;
+			} 
+		}
+		else if (annotation.find("http") != std::string::npos)
+		{
+			return std::pair<std::string, std::string>();
+		}
+		if (!isIdentifiersURI)
+		{
+			//pos = annotation.rfind(":");
+			pos = annotation.find(":"); // urn:
+			pos = annotation.find(":", pos+1); // urn:miriam:
+			pos = annotation.find(":", pos+1); // urn:miriam:obo.chebi:
+			if (pos != -1)
+			{
+				uri = annotation.substr(0, pos);
+				id = annotation.substr(pos+1);
+			}
+		} else {
+			
+			pos = tmp_anno.find(":"); // urn:
+			pos = tmp_anno.find(":", pos+1); // urn:miriam:
+			pos = tmp_anno.find(":", pos+1); // urn:miriam:chebi:
+			if (pos != -1)
+			{
+				uri = tmp_anno.substr(0, pos);
+				id = tmp_anno.substr(pos+1);
+			}
 		}
 	}
 	if (uri.empty() || id.empty())
